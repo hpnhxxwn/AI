@@ -1,0 +1,79 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
+\usepackage{algorithm}
+\begin{document}
+
+\begin{center}
+{\Large CS221 Fall 2015 Homework 3}
+
+\begin{tabular}{rl}
+SUNet ID: & lguan \\
+Name: & Leying Guan \\
+\end{tabular}
+\end{center}
+
+By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.
+
+\section*{Problem 1}
+
+\begin{enumerate}[label=(\alph*)]
+  \item It won't work if buy picking a sub-optimal for earlier word, we could
+decrease cost dramatically later because our goal is to find the global optimal.
+Here is a concrete example: rainyday.
+
+Suppose we have the following unigram cost dictionary:
+
+\{day: 1, rain:2, rainy:3\}
+
+the word ``rain'''s cost is 2 but ``rainy'''s cost is 3. The greedy
+algorithm will give us ``rain yday'' but the optimal solution is ``rainy day''. 
+\item Code
+\end{enumerate}
+\section*{Problem 2}
+
+\begin{enumerate}[label=(\alph*)]
+\item The fundamental reason is the same as problem 1-- local optimal is not
+equal to global optimal in this case, and here is a example I give:
+
+possible files:\{ht:(hat, hot, hate); dg:(dog, dag) \}
+
+bigramcost dictionay: \{my hat: 1 ; may hot:10; hot dog:1; hate dog:2 \}
+
+input:my ht dg
+
+The greedy algorithm will give us ``my hat dog'' while the global optimal is
+``my hot dog''.
+\item Code
+\end{enumerate}
+
+\section*{Problem 3}
+
+\begin{enumerate}[label=(\alph*)]
+  \item The states consist of sets of two elements: (location, previou word) where
+location indicates where should the next search start and previou word is the
+word right before this successors' seach.
+
+The actions consist of choices we take for next move, which is the new word we
+consider.
+
+The costs consist of bigramCost(previous word, new word).
+
+The initial state is (0, start of sentence) which means we are at the begining
+of the sentence and ready to start.
+
+The end state is (n, last word) where n is the length of input string.
+
+\item Code
+
+\item Define $u_b(w) = \min_{w'} b(w', w)$, then this unigram cost is consistent
+because $\forall s$, we have
+\begin{align*}
+Cost(s, a) &= \min_{v_1,...,v_K}\sum^K_{k = 2} b(v_1, v_k)\\
+& \leq \min_{v_1,...,v_K}\sum^K_{k = 1} u_b(v_k)\\
+& = Cost'(s,a)
+\end{align*}
+By definition, h is a consistent heuristic.
+\end{enumerate}
+
+\end{document}

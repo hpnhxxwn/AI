@@ -1,0 +1,123 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
+\usepackage{algorithm}
+\begin{document}
+
+\begin{center}
+{\Large CS221 Fall 2015 Homework 2}
+
+\begin{tabular}{rl}
+SUNet ID: & lguan \\
+Name: & Leying Guan \\
+\end{tabular}
+\end{center}
+
+By turning in this assignment, I agree by the Stanford honor code and declare
+that all of this is my own work.
+
+\section*{Problem 1}
+
+\begin{enumerate}[label=(\alph*)]
+  \item The derivative will be $-\sum^4_{i=1}y_i\phi(x_i)\mathbb{I}(w^T_ix_iy_i < 1)$. Starting from $w^T = (0,0,0,0)$, the first derivative will be (-2,0,1,1,1,-1), the algorithm will step after one step: weights of pretty, bad, not, plot and scenery will appear in the model.
+  
+  \item I give the following example where cases can not be seperable using linear classifier in feaeture space $\{$not, good, bad $\}$:
+  1.(+1) Good
+  2.(-1)Not Good
+  3.(+1) Not Bad
+  4.(-1) Bad
+  If we have perfect linear classifier, it means:
+  \begin{align}
+  w_2 >0\\
+  w_1 + w_1 < 0\\
+  w_3 < 0\\
+  w_1 + w_3 > 0
+  \end{align}
+  Equations (1),(2) indicate $w_1 > 0$ while Equations (3),(4) say $w_1 <0$, it is a contradiction.
+  
+  Thus we show no linear classifier can perfectly classify our given example.
+\end{enumerate}
+\section*{Problem 2}
+
+\begin{enumerate}[label=(\alph*)]
+  \item the loss Loss(x, y, w) = $(y - (1+e^{-w^T\phi(x)})^{-1})^2$
+   \item The gradient of the loss is as following:
+\begin{align*}
+\frac{d L}{d w} &= -2(y - (1+e^{-w^T\phi(x)})^{-1})\frac{e^{-w^T\phi(x)}\phi(x)}{ (1+e^{-w^T\phi(x)})^2}\\
+& =  -2(y - \sigma(w^T\phi(x)))\sigma(w^T\phi(x))(1-\sigma(w^T\phi(x))\phi(x)\\
+\end{align*}
+\item When $y = 0$, $\|Loss\| = 2\sigma(w^T\phi(x))\sigma(w^T\phi(x))(1-\sigma(w^T\phi(x))\|\phi(x)\| $. Obviously, when $\sigma(w^T\phi(x)) \rightarrow 0$ or  $\sigma(w^T\phi(x)) \rightarrow 1$, we can have  $\|Loss\| \rightarrow 0$, which correspond to $w^T\phi(x) \rightarrow -\infty $ and $w^T\phi(x) \rightarrow \infty $ respectively. Thus, any $w$ whose magnitute goes $\infty$ and whose direction is not orthogonal to $\phi(x)$ will work.
+\item  $\|Loss\| = 2\sigma(w^T\phi(x))\sigma(w^T\phi(x))(1-\sigma(w^T\phi(x))\|\phi(x)\| $, the largest magnitute happens when $\sigma(w^T\phi(x)) = \frac{2}{3}\rightarrow  e^{-w^T\phi(x)} = \frac{1}{2}\rightarrow w^T\phi(x) = \ln 2$, the largest magnitute $\|Loss\| = - \frac{8}{27}\|\phi(x)\| $
+\item Zero loss means: $y = \frac{1}{1+e^{(-w^T\phi(x))}} \rightarrow w^T\phi(x) = \ln \frac{y}{1-y}$. If we let $y' = \ln \frac{y}{1-y}$, then solving
+\[
+L'oss(x, y',w) = (y' - w^Tx)^2
+\]
+will give us the same solution and it is convex.
+\end{enumerate}
+
+\section*{Problem 3}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Code
+  \item Code
+  \item Code
+  \item Those wrongly predicted reviews are not straightforward -- they are trying to be witty or sarcastic, for example, they will use a lot of positive words even though they do not like it,  and thus a word-wise classifier is not supposed to capture their true meanings.
+  \item Code
+  \item If we let $n = 4$, test error decreases from $27.7\%$ to $27.0\%$. The reason might be  that $n = 4$ will enable use to capture most meaningful words while do not produce too many user-specific combinations such that our training sample size is still large enought to capture features which could be generalized to other data.  Below is an example where n-grams is probably better:
+  
+ The movie is not bad: the main character has terrifying and dark character while kind of pathetic at the same time, and the movie does not fail to convey his distorted mental stage.
+  
+ The review consists a lot negative words, however, it is positive it self. Use character n-grams can capture it buy considering information from consequtive words.
+\end{enumerate}
+
+\section*{Problem 4}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Starting with $\mu_1 = [-1,0], \mu_2 = [3,3]$:
+  
+  Iter1: z = (1,1,1,2), $\mu_1 = [1,\frac{1}{3}], \mu_2 = [2,2]$
+  
+  Iter2: z = (1,1,1,2), $\mu_1 = [1,\frac{1}{3}], \mu_2 = [2,2]$ - converge
+  
+  Starting with $\mu_1 = [1,-1], \mu_2 = [0,2]$:
+  
+  Iter1: z = (1,2,1,2), $\mu_1 = [1,0], \mu_2 = [1,1.5]$
+  
+  Iter2: z = (1,2,1,2), $\mu_1 = [1,0], \mu_2 = [1,1.5]$ - converge
+  \item Code
+  \item Modified k-means
+  \begin{algorithm}
+  \begin{enumerate}
+  \item For $n$ input points, we first get their representatives based on given constraints based on the following rules:
+  
+  Starting from two empty list $L_1, L_2$ with length $n'$
+  
+  (1)If one point $x_i$ is not required to be with other points, we  let a new element $(z_{i'},1)$  be at $i'$ location of list $L_1$, where $z_{i'} = x_i$ and let $i'$ element of list $L_2$ be $i$
+  
+  (2)If m points $x_{i1},\ldots, x_{im}$ are required to be together, let $z_{i'} = \frac{\sum^m_{j=1}x_{ij}}{m}$, a new element $(z_{i'},m)$  be at $i'$ location of list $L_1$, where $z_{i'} = x_i$ and let $i'$ element of list $L_2$ be $[i_1,\ldots i_m]$
+  
+  Suppose there are $n'$ elements in the new list.
+  \item Input desired number of classes K, and initialize K centroids $\mu_1,\ldots.\mu_K$ by choosing K different values from $z_i, i = 1,...,n'$ randomly
+  \item Repear until convergence\{
+  
+  For every i with element being $(z_i, m_i)$, set
+  \[
+  c^{(i)} = arg\min \|z^{(i)}-mu_j\|^2
+  \]
+ 
+   \} 
+  For every j, set\{
+  
+  \[\mu_j = \frac{\sum^{n'}_{i=1} z_im_i 1\{c^{(i)} =j\}}{\sum^{n'}_{i=1} m_i 1\{c^{(i)} = j\}}\]
+  
+  \}
+  \item Assign elements with original indexes in $L_2[i']$ to class $c^{(i')}$ whose centroid is $\mu_{c^{(i')}}$
+  \end{enumerate}
+  \end{algorithm}
+  This algorithm is a weighted kmeans and the only differences with kmeans are
+  
+  (1)Update centroids with weighted means
+  
+  (2)Map original data points to constrained group centers and map back after weighted kmeans
+\end{enumerate}
+
+\end{document}
